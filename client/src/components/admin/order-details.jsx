@@ -4,19 +4,42 @@ import { Label } from "@radix-ui/react-label";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import RenderForm from "../common/render-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Badge } from "../ui/badge";
+import { getOrderDetails, getOrders, updateOrderStatus } from "@/store/admin/orders-slice";
+import { useToast } from "@/hooks/use-toast";
+// import { camelCaseToCapitalized } from "@/lib/utils";
 
 const initData = {
-    status: ""
+    orderStatus: ""
 }
 
-const OrderDetails = () => {
+const OrderDetails = ({ order }) => {
     const [formData, setFormData] = useState(initData);
+    const dispatch = useDispatch();
+    const { toast } = useToast();
 
     function onSubmit(e) {
         e.preventDefault();
-        //
+        if (order?._id) {
+            dispatch(updateOrderStatus({ orderId: order?._id, formData })).then(data => {
+                if (data.payload.success) {
+                    dispatch(getOrders());
+                    dispatch(getOrderDetails(order?._id));
+                    toast({
+                        title: data.payload.message
+                    });
+                }
+            })
+        }
     }
+
+    useEffect(() => {
+        setFormData({ orderStatus: order?.orderStatus });
+    }, [order]);
+
+    // console.log("formData ", formData);
 
     return (
         <DialogContent className="sm:max-w-[600px] rounded-lg">
@@ -30,19 +53,32 @@ const OrderDetails = () => {
                 <div className="grid gap-2">
                     <div className="flex items-center justify-between mb-2">
                         <p className="font-medium">Order ID</p>
-                        <Label>#54334</Label>
+                        <Label>{order?._id}</Label>
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <p className="font-medium">Order Date</p>
-                        <Label>23 Aug, 2024</Label>
+                        <Label>{order?.createdAt}</Label>
                     </div>
                     <div className="flex items-center justify-between mb-2">
                         <p className="font-medium">Price</p>
-                        <Label>$199.00</Label>
+                        <Label>${order?.totalAmount.toFixed(2)}</Label>
                     </div>
                     <div className="flex items-center justify-between mb-2">
+                        <p className="font-medium">Payment Status</p>
+                        <Label className="capitalize">
+                            {order?.paymentStatus}
+                            {
+                                order?.paymentStatus === "paid" && <><span className="lowercase"> via</span> {order?.paymentMethod}</>
+                            }
+                        </Label>
+                    </div>
+                    {order?.paymentId && <div className="flex items-center justify-between mb-2">
+                        <p className="font-medium">Txn ID</p>
+                        <Label>{order?.paymentId}</Label>
+                    </div>}
+                    <div className="flex items-center justify-between mb-2">
                         <p className="font-medium">Status</p>
-                        <Label>In progress</Label>
+                        <Badge className={`capitalize text-nowrap ${order?.orderStatus === "completed" ? "bg-green-600" : (order?.orderStatus === "pending" ? "bg-amber-500" : (order?.orderStatus === "rejected" ? "bg-red-600" : (order?.orderStatus === "cancelled" ? "bg-red-300" : (order?.orderStatus === "inProgress" ? "bg-blue-600" : "bg-gray-600"))))}`}>{order?.orderStatus}</Badge>
                     </div>
                 </div>
                 <Separator />
@@ -50,14 +86,16 @@ const OrderDetails = () => {
                     <div className="grid gap-2">
                         <div className="font-semibold">Product Info</div>
                         <ul className="grid gap-2">
-                            <li className="flex items-center justify-between">
-                                <span>Product One</span>
-                                <span>3 X $89.00</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                                <span>Sample Product Two</span>
-                                <span>2 X $18.00</span>
-                            </li>
+                            {
+                                order?.cartItems.length > 0 ?
+                                    order?.cartItems.map((item, i) => (
+                                        <li key={i} className="flex items-center justify-between">
+                                            <span>{item.title}</span>
+                                            <span>{item.quantity} X ${item.price}</span>
+                                        </li>
+                                    ))
+                                    : null
+                            }
                         </ul>
                     </div>
                 </div>
@@ -65,12 +103,12 @@ const OrderDetails = () => {
                     <div className="grid gap-2">
                         <div className="font-semibold">Shipping Info</div>
                         <div className="grid gap-0.5 text-muted-foreground">
-                            <span>John Doe</span>
-                            <span>232, Wodar St,</span>
-                            <span>Defalrx - 36423</span>
-                            <span>Ph: (545) 788 6765</span>
+                            {/* <span>{user?.userName}</span> */}
+                            <span>{order?.addressInfo?.address},</span>
+                            <span>{order?.addressInfo?.city} - {order?.addressInfo?.pincode}.</span>
+                            <span>Ph: {order?.addressInfo?.phone}</span>
                         </div>
-                        <p>Notes here...</p>
+                        <p>{order?.addressInfo?.notes}</p>
                     </div>
                 </div>
 
@@ -79,14 +117,15 @@ const OrderDetails = () => {
                         formControls={[
                             {
                                 label: "Order Status",
-                                name: "status",
+                                name: "orderStatus",
                                 element: "select",
                                 options: [
                                     { id: "pending", label: "Pending" },
                                     { id: "inProgress", label: "In Progress" },
                                     { id: "inShipping", label: "In Shipping" },
                                     { id: "completed", label: "Completed" },
-                                    { id: "rejected", label: "Rejected" }
+                                    { id: "rejected", label: "Rejected" },
+                                    { id: "cancelled", label: "Cancelled" },
                                 ],
                                 placeholder: "Select Status",
                             },

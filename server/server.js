@@ -5,9 +5,11 @@ const cors = require('cors');
 
 const authRouter = require('./routes/auth/auth-routes');
 const adminProductsRouter = require('./routes/admin/products-routes');
+const adminOrderRouter = require('./routes/admin/orders-routes');
 const shopProductsRouter = require('./routes/shop/products-routes');
 const shopCartRouter = require('./routes/shop/cart-routes');
 const shopAddressRouter = require('./routes/shop/address-routes');
+const shopOrderRouter = require('./routes/shop/order-routes');
 // const pdfsRouter = require('./routes/pdfs');
 
 mongoose.connect('mongodb+srv://bala13bkm:GMoUTvr7kyXECbvS@cluster0.urewu.mongodb.net/')
@@ -33,9 +35,11 @@ app.use(cors({
 }));
 app.use('/api/auth', authRouter);
 app.use('/api/admin/products', adminProductsRouter);
+app.use('/api/admin/orders', adminOrderRouter);
 app.use('/api/shop/products', shopProductsRouter);
 app.use('/api/shop/cart', shopCartRouter);
 app.use('/api/shop/address', shopAddressRouter);
+app.use('/api/shop/orders', shopOrderRouter);
 
 // app.use('/api/pdfs', pdfsRouter); // for bulk downloading pdf files from urls (developed for client's need)
 

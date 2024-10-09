@@ -17,7 +17,7 @@ const initData = {
     notes: ""
 };
 
-const Address = () => {
+const Address = ({ selectedAddress, setSelectedAddress }) => {
     const [formData, setFormData] = useState(initData);
     const [editId, setEditId] = useState(null);
     const { addressList } = useSelector(state => state.shopAddress);
@@ -103,7 +103,7 @@ const Address = () => {
                     <div className="flex w-max space-x-4">
                         {
                             addressList && addressList.length > 0
-                                ? [...addressList].reverse().map((item, i) => <AddressCard key={i} addressInfo={item} handleAddressEdit={handleAddressEdit} handleAddressDelete={handleAddressDelete} />)
+                                ? [...addressList].reverse().map((item, i) => <AddressCard key={i} addressInfo={item} handleAddressEdit={handleAddressEdit} handleAddressDelete={handleAddressDelete} selectedAddress={selectedAddress} setSelectedAddress={setSelectedAddress} />)
                                 : null
                         }
                     </div>

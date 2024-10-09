@@ -2,9 +2,9 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import { Label } from "../ui/label";
 
-const AddressCard = ({ addressInfo, handleAddressEdit, handleAddressDelete }) => {
+const AddressCard = ({ addressInfo, handleAddressEdit, handleAddressDelete, selectedAddress, setSelectedAddress }) => {
     return (
-        <Card className="flex items-center">
+        <Card className={`flex items-center ${selectedAddress && selectedAddress === addressInfo ? "bg-blue-100 border-2 border-blue-400" : null}`} onClick={setSelectedAddress ? () => setSelectedAddress(addressInfo) : null}>
             <CardContent className="grid gap-2 py-3 px-4 w-56">
                 <Label className="text-xs">{addressInfo?.address}</Label>
                 <Label className="text-xs">{addressInfo?.city} - {addressInfo?.pincode}</Label>
@@ -14,7 +14,7 @@ const AddressCard = ({ addressInfo, handleAddressEdit, handleAddressDelete }) =>
                 <Button className="w-full h-8 text-xs" onClick={() => handleAddressEdit(addressInfo)}>Edit</Button>
                 <Button className="w-full h-8 text-xs" onClick={() => handleAddressDelete(addressInfo?._id)}>Delete</Button>
             </CardFooter>
-        </Card >
+        </Card>
     )
 }
 

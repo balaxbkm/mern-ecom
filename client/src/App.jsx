@@ -23,6 +23,9 @@ import NotFound from "./pages/not-found"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 import { checkAuth } from "./store/auth-slice"
+import PayPalReturn from "./pages/shop/paypal-return"
+import PayPalCancel from "./pages/shop/paypal-cancel"
+import PaymentSuccess from "./pages/shop/payment-success"
 
 function App() {
 	const { user, isAuthenticated, isLoading } = useSelector(state => state.auth);
@@ -64,6 +67,9 @@ function App() {
 					<Route path="listing" element={<Listing />} />
 					<Route path="checkout" element={<Checkout />} />
 					<Route path="account" element={<Account />} />
+					<Route path="paypal-return" element={<PayPalReturn />} />
+					<Route path="paypal-cancel" element={<PayPalCancel />} />
+					<Route path="payment-success" element={<PaymentSuccess />} />
 				</Route>
 				<Route path="/unauth" element={<Unauth />} />
 				<Route path="*" element={<NotFound />} />
