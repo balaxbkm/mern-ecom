@@ -68,7 +68,7 @@ const ProductDetailsDialog = ({ openDetails, setOpenDetails, productDetails, han
                             productDetails?.totalStock !== 0 &&
                             <div className="mb-5">
                                 <div className="flex items-center gap-2 w-full">
-                                    <Button className="text-sm w-full" onClick={() => handleAddToCart(productDetails?._id)}>Add to cart</Button>
+                                    <Button className="text-sm w-full" onClick={() => handleAddToCart(productDetails?._id, productDetails?.totalStock)}>Add to cart</Button>
                                     {/* <Button className="text-sm w-full" disabled>Buy now</Button> */}
                                 </div>
                             </div>

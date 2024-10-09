@@ -27,12 +27,15 @@ const Listing = () => {
     const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
     const { products, productDetails } = useSelector(state => state.shopProducts);
+    const { cartItems } = useSelector(state => state.shopCart);
     const [filters, setFilters] = useState({});
     const [sortBy, setSortBy] = useState(null);
     const [sortIcon, setSortIcon] = useState(null);
     const [openDetails, setOpenDetails] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const { toast } = useToast();
+
+    const categorySearchParam = searchParams.get("category");
 
     function handleFilter(sectionId, currentOption) {
         let copyFilters = { ...filters };
@@ -67,8 +70,22 @@ const Listing = () => {
         dispatch(getProduct(id));
     }
 
-    function handleAddToCart(productId) {
-        // console.log(productId);
+    function handleAddToCart(productId, totalStock) {
+        const cItems = cartItems.items || [];
+        if (cItems.length) {
+            const currentIndex = cItems.findIndex(item => item.productId === productId);
+            if (currentIndex > -1) {
+                const quantity = cItems[currentIndex].quantity;
+                if (quantity + 1 > totalStock) {
+                    toast({
+                        title: `Only ${quantity} quantity can be added for this item`,
+                        variant: "destructive"
+                    });
+                    return;
+                }
+            }
+        }
+
         dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then((data) => {
             if (data.payload.success) {
                 dispatch(getCartItems(user?.id));
@@ -82,7 +99,7 @@ const Listing = () => {
     useEffect(() => {
         setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
         setSortBy(sessionStorage.getItem("sort") || "price-lowtohigh");
-    }, []);
+    }, [categorySearchParam]);
 
     useEffect(() => {
         if (filters && Object.keys(filters).length > 0) {
@@ -107,7 +124,7 @@ const Listing = () => {
         }
     }, [productDetails]);
 
-    // console.log("Details:", productDetails);
+    console.log("Products:", products);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-[240px_1fr]">

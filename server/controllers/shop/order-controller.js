@@ -1,5 +1,6 @@
 const Order = require("../../models/Order");
 const Cart = require("../../models/Cart");
+const Product = require("../../models/Product");
 const paypal = require("../../helpers/paypal");
 
 const createOrder = async (req, res) => {
@@ -74,6 +75,20 @@ const capturePayment = async (req, res) => {
                 success: false,
                 message: "Order cannot be found!"
             });
+        }
+
+        for (let item of order.cartItems) {
+            let product = await Product.findById(item.productId);
+
+            if (!product) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Product/stock cannot be found!"
+                });
+            }
+
+            product.totalStock -= item.quantity;
+            await product.save();
         }
 
         const cartId = order.cartId;

@@ -36,6 +36,7 @@ const Home = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const { user } = useSelector(state => state.auth);
     const { products, productDetails } = useSelector(state => state.shopProducts);
+    const { cartItems } = useSelector(state => state.shopCart);
     const [openDetails, setOpenDetails] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -55,8 +56,22 @@ const Home = () => {
         dispatch(getProduct(id));
     }
 
-    function handleAddToCart(productId) {
-        // console.log(productId);
+    function handleAddToCart(productId, totalStock) {
+        const cItems = cartItems.items || [];
+        if (cItems.length) {
+            const currentIndex = cItems.findIndex(item => item.productId === productId);
+            if (currentIndex > -1) {
+                const quantity = cItems[currentIndex].quantity;
+                if (quantity + 1 > totalStock) {
+                    toast({
+                        title: `Only ${quantity} quantity can be added for this item`,
+                        variant: "destructive"
+                    });
+                    return;
+                }
+            }
+        }
+
         dispatch(addToCart({ userId: user?.id, productId, quantity: 1 })).then((data) => {
             if (data.payload.success) {
                 dispatch(getCartItems(user?.id));

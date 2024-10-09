@@ -7,6 +7,7 @@ import { getCartItems } from "@/store/shop/cart-slice";
 import { Button } from "@/components/ui/button";
 import { createOrder } from "@/store/shop/order-slice";
 import { useToast } from "@/hooks/use-toast";
+import { RotateCwIcon } from "lucide-react";
 
 const Checkout = () => {
     const { user } = useSelector(state => state.auth);
@@ -14,6 +15,7 @@ const Checkout = () => {
     const { approvalUrl } = useSelector(state => state.shopOrder);
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [isPaymentStart, setIsPaymentStart] = useState(false);
+    const [btnLoading, setBtnLoading] = useState(false);
     const dispatch = useDispatch();
     const { toast } = useToast();
 
@@ -37,6 +39,8 @@ const Checkout = () => {
             });
             return;
         }
+
+        setBtnLoading(true);
 
         const orderData = {
             userId: user?.id,
@@ -82,7 +86,7 @@ const Checkout = () => {
         dispatch(getCartItems(user?.id));
     }, [dispatch]);
 
-    // console.log(selectedAddress);
+    // console.log(isPaymentStart);
 
     return (
         <div className="flex flex-col">
@@ -107,7 +111,7 @@ const Checkout = () => {
                             <div className="flex flex-col gap-1 items-end">
                                 <span className="font-bold text-xs text-muted-foreground">Subtotal</span>
                                 <span className="font-bold text-2xl">${totalCartAmount.toFixed(2)}</span>
-                                <Button className="mt-3" onClick={handlePayment}>Pay with PayPal</Button>
+                                <Button className="mt-3" disabled={btnLoading} onClick={handlePayment}>{btnLoading ? <><RotateCwIcon className="mr-2 h-4 w-4 animate-spin" /> Processing...</> : "Pay with PayPal"}</Button>
                             </div>
                         </div>
                     </div>

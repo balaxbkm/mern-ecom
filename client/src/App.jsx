@@ -26,6 +26,7 @@ import { checkAuth } from "./store/auth-slice"
 import PayPalReturn from "./pages/shop/paypal-return"
 import PayPalCancel from "./pages/shop/paypal-cancel"
 import PaymentSuccess from "./pages/shop/payment-success"
+import Search from "./pages/shop/search"
 
 function App() {
 	const { user, isAuthenticated, isLoading } = useSelector(state => state.auth);
@@ -63,6 +64,7 @@ function App() {
 						<ShopLayout />
 					</CheckAuth>
 				}>
+					<Route path="search" element={<Search />} />
 					<Route path="home" element={<Home />} />
 					<Route path="listing" element={<Listing />} />
 					<Route path="checkout" element={<Checkout />} />

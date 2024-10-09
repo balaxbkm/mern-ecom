@@ -8,7 +8,13 @@ const Product = ({ product, handleGetProductDetails, handleAddToCart }) => {
             <div onClick={() => handleGetProductDetails(product?._id)}>
                 <div className="relative">
                     <img src={product?.image} alt={product?.title} className="w-full h-[240px] object-cover rounded-t-lg" />
-                    {product?.salePrice > 0 && <Badge className="absolute top-2 left-2 bg-red-600 hover:bg-red-700">{product?.totalStock !== 0 ? "Sale" : "Out of Stock"}</Badge>}
+                    {
+                        product?.salePrice > 0 && product?.totalStock !== 0
+                            ? <Badge className="absolute top-2 left-2 bg-green-500 hover:bg-green-700">Sale</Badge>
+                            : <Badge className={`absolute top-2 left-2 ${product?.totalStock !== 0 && product?.totalStock <= 3 ? "bg-orange-500 hover:bg-orange-700" : "bg-red-600 hover:bg-red-700"} empty:hidden`}>
+                                {product?.totalStock > 3 ? null : product?.totalStock !== 0 && product?.totalStock <= 3 ? "Few Stocks" : "Out of Stock"}
+                            </Badge>
+                    }
                 </div>
             </div>
             <CardContent className="p-4" onClick={() => handleGetProductDetails(product?._id)}>
@@ -32,7 +38,7 @@ const Product = ({ product, handleGetProductDetails, handleAddToCart }) => {
             </CardContent>
             {product?.totalStock !== 0 && <CardFooter className="p-4 pt-0">
                 <div className="flex items-center gap-2 justify-between w-full">
-                    <Button className="text-sm w-full" onClick={() => handleAddToCart(product?._id)}>Add to cart</Button>
+                    <Button className="text-sm w-full" onClick={() => handleAddToCart(product?._id, product?.totalStock)}>Add to cart</Button>
                     {/* <Button className="text-sm w-full" disabled>Buy now</Button> */}
                 </div>
             </CardFooter>}

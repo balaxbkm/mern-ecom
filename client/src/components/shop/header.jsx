@@ -1,5 +1,5 @@
 import { LogOutIcon, MenuIcon, SearchIcon, ShoppingCartIcon, StoreIcon, UserCogIcon } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,19 +15,23 @@ import { Label } from "../ui/label";
 
 function MenuItems({ setOpenMenu }) {
     const navigate = useNavigate();
+    const location = useLocation();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     function navigateListingPage(item) {
         setOpenMenu(false);
         sessionStorage.removeItem("filters");
-        const currentFilter = item.id !== "home" ? { category: [item.id] } : null;
+        const currentFilter = item.id !== "home" && item.id !== "products" && item.id !== "search" ? { category: [item.id] } : null;
         sessionStorage.setItem("filters", JSON.stringify(currentFilter));
-        navigate(item.path);
+
+        location.pathname.includes("listing") && currentFilter !== null ?
+            setSearchParams(new URLSearchParams(`?category=${item.id}`)) :
+            navigate(item.path);
     }
 
     return (
         <nav className="flex flex-col lg:flex-row mb-3 lg:mb-0 lg:items-center gap-6">
             {shopMenuItems.map((menuItem, i) => <Label key={i} onClick={() => navigateListingPage(menuItem)} className="text-sm font-medium cursor-pointer">{menuItem.label}</Label>)}
-            <Link to={"/shop/search"} className="hidden md:block"><SearchIcon /></Link>
         </nav>
     );
 }
@@ -112,11 +116,13 @@ const ShopHeader = () => {
                     <span className="text-xl font-bold">Mern <span className="text-slate-600">Ecom</span></span>
                 </Link>
 
-                <div className="flex items-center gap-2 lg:hidden">
+                <div className="flex items-center gap-3 lg:hidden">
                     <Sheet open={openCart} onOpenChange={() => setOpenCart(false)}>
+                        <Link to={"/shop/search"}><SearchIcon /></Link>
                         <CartOption setOpenCart={setOpenCart} cartCount={cartItems && cartItems.items && cartItems.items.length > 0 ? cartItems.items.length : 0} />
                         <CartWrapper cartItems={cartItems && cartItems.items && cartItems.items.length > 0 ? cartItems.items : []} setOpenCart={setOpenCart} />
                     </Sheet>
+
                     <Sheet open={openMenu} onOpenChange={setOpenMenu}>
                         <SheetTrigger asChild>
                             <Button variant="outline" size="icon" className="lg:hidden" onClick={() => setOpenMenu(true)}>
@@ -142,8 +148,9 @@ const ShopHeader = () => {
                     </Sheet>
                 </div>
 
-                <div className="hidden lg:block">
+                <div className="hidden lg:flex items-center gap-5">
                     <MenuItems setOpenMenu={setOpenMenu} />
+                    <Link to={"/shop/search"}><SearchIcon /></Link>
                 </div>
                 <div className="hidden lg:block">
                     <div className="flex items-center gap-4">
