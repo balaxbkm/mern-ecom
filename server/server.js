@@ -11,6 +11,7 @@ const shopCartRouter = require('./routes/shop/cart-routes');
 const shopAddressRouter = require('./routes/shop/address-routes');
 const shopOrderRouter = require('./routes/shop/order-routes');
 const shopSearchRouter = require('./routes/shop/search-routes');
+const shopReviewRouter = require('./routes/shop/review-routes');
 // const pdfsRouter = require('./routes/pdfs');
 
 mongoose.connect('mongodb+srv://bala13bkm:GMoUTvr7kyXECbvS@cluster0.urewu.mongodb.net/')
@@ -42,6 +43,7 @@ app.use('/api/shop/cart', shopCartRouter);
 app.use('/api/shop/address', shopAddressRouter);
 app.use('/api/shop/orders', shopOrderRouter);
 app.use('/api/shop/search', shopSearchRouter);
+app.use('/api/shop/reviews', shopReviewRouter);
 
 // app.use('/api/pdfs', pdfsRouter); // for bulk downloading pdf files from urls (developed for client's need)
 
