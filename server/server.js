@@ -12,7 +12,7 @@ const shopAddressRouter = require('./routes/shop/address-routes');
 const shopOrderRouter = require('./routes/shop/order-routes');
 const shopSearchRouter = require('./routes/shop/search-routes');
 const shopReviewRouter = require('./routes/shop/review-routes');
-// const pdfsRouter = require('./routes/pdfs');
+const commonFeatureRouter = require('./routes/common/feature-routes');
 
 mongoose.connect('mongodb+srv://bala13bkm:GMoUTvr7kyXECbvS@cluster0.urewu.mongodb.net/')
     .then(() => console.log("MongoDB Connected!"))
@@ -44,9 +44,7 @@ app.use('/api/shop/address', shopAddressRouter);
 app.use('/api/shop/orders', shopOrderRouter);
 app.use('/api/shop/search', shopSearchRouter);
 app.use('/api/shop/reviews', shopReviewRouter);
-
-// app.use('/api/pdfs', pdfsRouter); // for bulk downloading pdf files from urls (developed for client's need)
+app.use('/api/common/feature', commonFeatureRouter);
 
 app.get('/', (req, res) => res.send('Hello World!'));
-
 app.listen(port, () => console.log(`Server is now listening on port ${port}!`));

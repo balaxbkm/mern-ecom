@@ -31,15 +31,17 @@ const ProductDetailsDialog = ({ openDetails, setOpenDetails, productDetails, han
     }
 
     function submitReview() {
-        console.log(rating, comment);
+        // console.log(rating, comment);
         if (rating > 0 && comment.trim() !== "") {
             dispatch(addReview({
                 productId: productDetails?._id,
                 userId: user?.id,
                 rating,
                 comment
-            })).then(data => {
-                if (data.payload.success) {
+            })).then(data => {     
+                console.log(data);
+                           
+                if (data?.payload?.success) {
                     dispatch(getReviews(productDetails?._id));
                     console.log(data.payload);
                     toast({
@@ -47,6 +49,10 @@ const ProductDetailsDialog = ({ openDetails, setOpenDetails, productDetails, han
                     });
                     setRating(0);
                     setComment("");
+                } else {
+                    toast({
+                        title: "Something went wrong!"
+                    });
                 }
             });
         } else {
@@ -60,7 +66,7 @@ const ProductDetailsDialog = ({ openDetails, setOpenDetails, productDetails, han
         dispatch(getReviews(productDetails?._id));
     }, [dispatch, productDetails]);
 
-    console.log(reviews);
+    // console.log(reviews);
 
     return (
         <Dialog open={openDetails} onOpenChange={handleDialogClose}>
@@ -120,7 +126,7 @@ const ProductDetailsDialog = ({ openDetails, setOpenDetails, productDetails, han
                         }
                         <Separator className="mb-3 md:mb-4" />
                         <div className="max-h-[300px] overflow-auto">
-                            <h2 className="text-sm md:text-base font-bold mb-3">Reviews</h2>
+                            <h2 className="text-sm md:text-base font-bold mb-3">{reviews && reviews.length > 0 ? "Reviews" : "Your Review"}</h2>
                             <div className="grid gap-5">
 
                                 {
@@ -153,13 +159,13 @@ const ProductDetailsDialog = ({ openDetails, setOpenDetails, productDetails, han
                                     <StarRating rating={rating} setRating={setRating} />
                                 </div>
 
-                                <div className="flex items-center gap-2 mb-1">
+                                <div className="flex items-center gap-3 mb-1">
                                     <Avatar className="w-6 h-6 border">
                                         <AvatarImage src="https://github.com/shadcn.pngd" alt="@shadcn" />
                                         <AvatarFallback className="text-[11px] font-bold">K</AvatarFallback>
                                     </Avatar>
                                     <Input name="comment" placeholder="Write a review..." className="h-7 text-xs" value={comment} onChange={(e) => setComment(e.target.value)} />
-                                    <Button variant="ghost" size="icon" className="h-4 w-4" disabled={comment.trim() === ""} onClick={submitReview}>
+                                    <Button variant="ghost" size="icon" className="h-6 w-6" disabled={comment.trim() === ""} onClick={submitReview}>
                                         <SendHorizonalIcon className="text-blue-700" />
                                     </Button>
                                 </div>

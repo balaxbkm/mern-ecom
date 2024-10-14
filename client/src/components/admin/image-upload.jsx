@@ -43,11 +43,10 @@ function ProductImageUpload({ file, setFile, fileUrl, setFileUrl, uploading, set
 
     useEffect(() => {
         if (file !== null) uploadImageToCloudinary();
-    }, [file])
-
+    }, [file]);
 
     return (
-        <div className="w-full max-w-md mx-auto mt-5">
+        <div className="w-full mx-auto mt-5">
             <Label className="font-semibold mb-2 block">Upload Image</Label>
             <div className="mt-3" onDragOver={handleDragOver} onDrop={handleDrop}>
                 <Input type="file" id="image-upload" className="hidden" ref={inputRef} onChange={handleFileChange} />

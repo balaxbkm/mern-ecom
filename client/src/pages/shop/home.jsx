@@ -1,7 +1,4 @@
 import { Button } from "@/components/ui/button";
-import bannerOne from "../../assets/banner-1.webp";
-import bannerTwo from "../../assets/banner-2.webp";
-import bannerThree from "../../assets/banner-3.webp";
 import { AmphoraIcon, AnchorIcon, BabyIcon, BananaIcon, BikeIcon, BinocularsIcon, CherryIcon, ChevronLeftIcon, ChevronRightIcon, CloudLightningIcon, DumbbellIcon, FootprintsIcon, ShirtIcon, WatchIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
@@ -12,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import ProductDetailsDialog from "@/components/shop/product-details-dialog";
 import { addToCart, getCartItems } from "@/store/shop/cart-slice";
 import { useToast } from "@/hooks/use-toast";
+import { getFeatureImages } from "@/store/common/feature-slice";
 
 const categoriesWithIcon = [
     { id: "men", label: "Men", icon: ShirtIcon },
@@ -32,7 +30,7 @@ const brandsWithIcon = [
 ];
 
 const Home = () => {
-    const slides = [bannerOne, bannerTwo, bannerThree];
+    const { featureImages } = useSelector(state => state.commonFeatures);
     const [currentSlide, setCurrentSlide] = useState(0);
     const { user } = useSelector(state => state.auth);
     const { products, productDetails } = useSelector(state => state.shopProducts);
@@ -80,18 +78,19 @@ const Home = () => {
                 });
             }
         });
-    }
+    }    
+
+    useEffect(() => {
+        dispatch(getFeatureImages());
+        dispatch(getProducts({ filterParams: {}, sortParam: "price-lowtohigh" }));
+    }, [dispatch]);
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setCurrentSlide(prev => (prev + 1) % slides.length);
-        }, 12000);
+            setCurrentSlide(prev => (prev + 1) % featureImages.length);
+        }, 8000);
         return () => clearInterval(timer);
-    }, []);
-
-    useEffect(() => {
-        dispatch(getProducts({ filterParams: {}, sortParam: "price-lowtohigh" }));
-    }, [dispatch]);
+    }, [featureImages.length]);
 
     useEffect(() => {
         if (productDetails !== null) {
@@ -99,38 +98,41 @@ const Home = () => {
         }
     }, [productDetails]);
 
-    // console.log("products: ", products);
+    // console.log("featureImages: ", currentSlide);
 
     return (
         <div className="flex flex-col min-h-screen">
-            <div className="relative w-full h-[240px] md:h-[600px] overflow-hidden">
-                {
-                    slides.map((slide, i) => (
-                        <img key={i}
-                            src={slide}
-                            alt="Slide"
-                            className={`${i === currentSlide ? "opacity-100" : "opacity-0"} absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
-                        />
-                    ))
-                }
-                <Button
-                    variant="outline"
-                    size="icon"
-                    className="w-7 h-7 md:w-10 md:h-10 absolute top-1/2 left-3 md:left-8 transform -translate-y-1/2 bg-white/80"
-                    onClick={() => setCurrentSlide(prev => (prev - 1 + slides.length) % slides.length)}
-                >
-                    <ChevronLeftIcon className="w-3 h-3 md:w-4 md:h-4" />
-                </Button>
-                <Button
-                    variant="outline"
-                    size="icon"
-                    className="w-7 h-7 md:w-10 md:h-10 absolute top-1/2 right-3 md:right-8 transform -translate-y-1/2 bg-white/80"
-                    onClick={() => setCurrentSlide(prev => (prev + 1) % slides.length)}
-                >
-                    <ChevronRightIcon className="w-3 h-3 md:w-4 md:h-4" />
-                </Button>
-            </div>
+            {
+                featureImages && featureImages.length > 0 &&
+                <div className="relative w-full h-[240px] md:h-[600px] overflow-hidden">
+                    {
 
+                        featureImages.map((item, i) => (
+                            <img key={i}
+                                src={item.image}
+                                alt="Slide"
+                                className={`${i === currentSlide ? "opacity-100" : "opacity-0"} absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
+                            />
+                        ))
+                    }
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="w-7 h-7 md:w-10 md:h-10 absolute top-1/2 left-3 md:left-8 transform -translate-y-1/2 bg-white/80"
+                        onClick={() => setCurrentSlide(prev => (prev - 1 + featureImages.length) % featureImages.length)}
+                    >
+                        <ChevronLeftIcon className="w-3 h-3 md:w-4 md:h-4" />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="w-7 h-7 md:w-10 md:h-10 absolute top-1/2 right-3 md:right-8 transform -translate-y-1/2 bg-white/80"
+                        onClick={() => setCurrentSlide(prev => (prev + 1) % featureImages.length)}
+                    >
+                        <ChevronRightIcon className="w-3 h-3 md:w-4 md:h-4" />
+                    </Button>
+                </div>
+            }
             <section className="py-12 md:py-16 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <h2 className="text-2xl md:text-4xl font-bold text-center mb-12">Shop by Category</h2>
