@@ -33,7 +33,8 @@ function App() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(checkAuth());
+		const token = JSON.parse(sessionStorage.getItem('token'))
+		dispatch(checkAuth(token));
 	}, [dispatch]);
 
 	if (isLoading) return <div className="flex items-center justify-center h-screen">Loading...</div>;

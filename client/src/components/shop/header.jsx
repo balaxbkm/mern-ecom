@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { shopMenuItems } from "@/config";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { logoutUser } from "@/store/auth-slice";
+import { logoutUser, resetTokenAndCredentials } from "@/store/auth-slice";
 import { useEffect, useState } from "react";
 import CartWrapper from "./cart-wrapper";
 import { getCartItems } from "@/store/shop/cart-slice";
@@ -60,7 +60,10 @@ function UserAvatar({ user, setOpenMenu }) {
     }
 
     function handleLogout() {
-        dispatch(logoutUser());
+        // dispatch(logoutUser());
+        dispatch(resetTokenAndCredentials());
+        sessionStorage.clear();
+        navigate('/auth/login');
     }
 
     // console.log(user);
