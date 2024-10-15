@@ -13,12 +13,12 @@ export const getProducts = createAsyncThunk("/products", async ({filterParams, s
         sortBy: sortParam
     });
 
-    const result = await axios.get(`http://localhost:8000/api/shop/products?${query}`);
+    const result = await axios.get(`${import.meta.env.VITE_API_URL}/shop/products?${query}`);
     return result?.data;
 });
 
 export const getProduct = createAsyncThunk("/products/:id", async (id) => {
-    const result = await axios.get(`http://localhost:8000/api/shop/products/${id}`);
+    const result = await axios.get(`${import.meta.env.VITE_API_URL}/shop/products/${id}`);
     return result?.data;
 });
 

@@ -7,22 +7,22 @@ const initialState = {
 }
 
 export const addToCart = createAsyncThunk("/cart/add", async ({ userId, productId, quantity }) => {
-    const result = await axios.post(`http://localhost:8000/api/shop/cart/`, { userId, productId, quantity });
+    const result = await axios.post(`${import.meta.env.VITE_API_URL}/shop/cart/`, { userId, productId, quantity });
     return result?.data;
 });
 
 export const getCartItems = createAsyncThunk("/cart/get", async (userId) => {
-    const result = await axios.get(`http://localhost:8000/api/shop/cart/${userId}`);
+    const result = await axios.get(`${import.meta.env.VITE_API_URL}/shop/cart/${userId}`);
     return result?.data;
 });
 
 export const updateCart = createAsyncThunk("/cart/update", async ({ userId, productId, quantity }) => {
-    const result = await axios.put(`http://localhost:8000/api/shop/cart/`, { userId, productId, quantity });
+    const result = await axios.put(`${import.meta.env.VITE_API_URL}/shop/cart/`, { userId, productId, quantity });
     return result?.data;
 });
 
 export const deleteCartItem = createAsyncThunk("/cart/delete", async ({ userId, productId }) => {
-    const result = await axios.delete(`http://localhost:8000/api/shop/cart/${userId}/${productId}`);
+    const result = await axios.delete(`${import.meta.env.VITE_API_URL}/shop/cart/${userId}/${productId}`);
     return result?.data;
 });
 

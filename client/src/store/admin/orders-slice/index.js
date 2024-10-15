@@ -8,17 +8,17 @@ const initialState = {
 }
 
 export const updateOrderStatus = createAsyncThunk("/orders/update", async ({ orderId, formData }) => {
-    const result = await axios.put(`http://localhost:8000/api/admin/orders/${orderId}`, formData);
+    const result = await axios.put(`${import.meta.env.VITE_API_URL}/admin/orders/${orderId}`, formData);
     return result?.data;
 });
 
 export const getOrders = createAsyncThunk("/orders", async () => {
-    const result = await axios.get(`http://localhost:8000/api/admin/orders/`);
+    const result = await axios.get(`${import.meta.env.VITE_API_URL}/admin/orders/`);
     return result?.data;
 });
 
 export const getOrderDetails = createAsyncThunk("/orders/get-one", async (orderId) => {
-    const result = await axios.get(`http://localhost:8000/api/admin/orders/${orderId}`);
+    const result = await axios.get(`${import.meta.env.VITE_API_URL}/admin/orders/${orderId}`);
     return result?.data;
 });
 

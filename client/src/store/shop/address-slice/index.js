@@ -7,22 +7,22 @@ const initialState = {
 }
 
 export const addAddress = createAsyncThunk("/address/add", async (formData) => {
-    const result = await axios.post(`http://localhost:8000/api/shop/address/`, formData);
+    const result = await axios.post(`${import.meta.env.VITE_API_URL}/shop/address/`, formData);
     return result?.data;
 });
 
 export const getAddress = createAsyncThunk("/address/get", async (userId) => {
-    const result = await axios.get(`http://localhost:8000/api/shop/address/${userId}`);
+    const result = await axios.get(`${import.meta.env.VITE_API_URL}/shop/address/${userId}`);
     return result?.data;
 });
 
 export const updateAddress = createAsyncThunk("/address/update", async ({ userId, addressId, formData }) => {
-    const result = await axios.put(`http://localhost:8000/api/shop/address/${userId}/${addressId}`, formData);
+    const result = await axios.put(`${import.meta.env.VITE_API_URL}/shop/address/${userId}/${addressId}`, formData);
     return result?.data;
 });
 
 export const deleteAddress = createAsyncThunk("/address/delete", async ({ userId, addressId }) => {
-    const result = await axios.delete(`http://localhost:8000/api/shop/address/${userId}/${addressId}`);
+    const result = await axios.delete(`${import.meta.env.VITE_API_URL}/shop/address/${userId}/${addressId}`);
     return result?.data;
 });
 

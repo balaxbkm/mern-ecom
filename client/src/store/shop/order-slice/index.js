@@ -10,22 +10,22 @@ const initialState = {
 }
 
 export const createOrder = createAsyncThunk("/orders/create", async (orderData) => {
-    const result = await axios.post(`http://localhost:8000/api/shop/orders/`, orderData);
+    const result = await axios.post(`${import.meta.env.VITE_API_URL}/shop/orders/`, orderData);
     return result?.data;
 });
 
 export const capturePayment = createAsyncThunk("/orders/capture", async ({ orderId, paymentId, payerId }) => {
-    const result = await axios.post(`http://localhost:8000/api/shop/orders/capture`, { orderId, paymentId, payerId });
+    const result = await axios.post(`${import.meta.env.VITE_API_URL}/shop/orders/capture`, { orderId, paymentId, payerId });
     return result?.data;
 });
 
 export const getOrders = createAsyncThunk("/orders", async (userId) => {
-    const result = await axios.get(`http://localhost:8000/api/shop/orders/${userId}`);
+    const result = await axios.get(`${import.meta.env.VITE_API_URL}/shop/orders/${userId}`);
     return result?.data;
 });
 
 export const getOrderDetails = createAsyncThunk("/orders/one", async ({ userId, orderId }) => {
-    const result = await axios.get(`http://localhost:8000/api/shop/orders/${userId}/${orderId}`);
+    const result = await axios.get(`${import.meta.env.VITE_API_URL}/shop/orders/${userId}/${orderId}`);
     return result?.data;
 });
 

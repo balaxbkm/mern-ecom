@@ -13,8 +13,8 @@ const createOrder = async (req, res) => {
                 payment_method: "paypal"
             },
             redirect_urls: {
-                return_url: 'http://localhost:5173/shop/paypal-return',
-                cancel_url: 'http://localhost:5173/shop/paypal-cancel'
+                return_url: process.env.CLIENT_BASE_URL + process.env.PAYPAL_RETURN_PATH,
+                cancel_url: process.env.CLIENT_BASE_URL + process.env.PAYPAL_CANCEL_PATH
             },
             transactions: [
                 {
@@ -23,12 +23,12 @@ const createOrder = async (req, res) => {
                             name: item.title,
                             sku: item.productId,
                             price: item.price.toFixed(2),
-                            currency: "USD",
+                            currency: process.env.PAYPAL_CURRENCY,
                             quantity: item.quantity
                         }))
                     },
                     amount: {
-                        currency: "USD",
+                        currency: process.env.PAYPAL_CURRENCY,
                         total: totalAmount.toFixed(2)
                     },
                     description: "Payment description..."
